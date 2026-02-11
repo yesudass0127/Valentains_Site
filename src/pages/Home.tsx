@@ -30,17 +30,20 @@ import ForeverCounter from '../components/ForeverCounter';
 import LoveMap from '../components/LoveMap';
 import MoodHarmony from '../components/MoodHarmony';
 import WishingWell from '../components/WishingWell';
+import VideoSpotlight from '../components/VideoSpotlight';
+import MusicPlayer from '../components/MusicPlayer';
 
 
 type JourneyStep = 'UNLOCK' | 'SECRET' | 'MILESTONES' | 'PROPOSAL' | 'MEMORIES' | 'TREASURE' | 'FINAL';
-type StoryScene = 'GARDEN' | 'HERO' | 'MOOD' | 'COUNTER' | 'QUIZ' | 'MAP' | 'SCANNER' | 'HIGHLIGHT' | 'SCRAPBOOK' | 'CAROUSEL' | 'MESSAGES' | 'WISH' | 'CONSTELLATION' | 'CONTRACT' | 'PROMISE' | 'SCRATCH' | 'LETTER';
+type StoryScene = 'GARDEN' | 'HERO' | 'MOOD' | 'COUNTER' | 'QUIZ' | 'MAP' | 'SCANNER' | 'HIGHLIGHT' | 'VIDEO' | 'SCRAPBOOK' | 'CAROUSEL' | 'MESSAGES' | 'WISH' | 'CONSTELLATION' | 'CONTRACT' | 'PROMISE' | 'SCRATCH' | 'LETTER';
 
 const Home = () => {
     const [step, setStep] = useState<JourneyStep>('UNLOCK');
     const [scene, setScene] = useState<StoryScene>('GARDEN');
     const [completedScenes, setCompletedScenes] = useState<StoryScene[]>([]);
+    const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
-    const scenes: StoryScene[] = ['GARDEN', 'HERO', 'MOOD', 'COUNTER', 'QUIZ', 'MAP', 'SCANNER', 'HIGHLIGHT', 'SCRAPBOOK', 'CAROUSEL', 'MESSAGES', 'WISH', 'CONSTELLATION', 'CONTRACT', 'PROMISE', 'SCRATCH', 'LETTER'];
+    const scenes: StoryScene[] = ['GARDEN', 'HERO', 'MOOD', 'COUNTER', 'QUIZ', 'MAP', 'SCANNER', 'HIGHLIGHT', 'VIDEO', 'SCRAPBOOK', 'CAROUSEL', 'MESSAGES', 'WISH', 'CONSTELLATION', 'CONTRACT', 'PROMISE', 'SCRATCH', 'LETTER'];
 
     const markSceneComplete = (s: StoryScene) => {
         if (!completedScenes.includes(s)) {
@@ -77,7 +80,10 @@ const Home = () => {
             <AnimatePresence mode="wait">
                 {/* ... (keep existing steps) ... */}
                 {step === 'UNLOCK' && (
-                    <UnlockHeart key="unlock" onUnlock={() => setStep('SECRET')} />
+                    <UnlockHeart key="unlock" onUnlock={() => {
+                        setStep('SECRET');
+                        setIsMusicPlaying(true);
+                    }} />
                 )}
 
                 {step === 'SECRET' && (
@@ -130,6 +136,7 @@ const Home = () => {
                                 {scene === 'MAP' && <motion.div key="map" initial={{ opacity: 0, rotate: 20 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: -20 }} transition={{ duration: 0.7 }}><LoveMap /></motion.div>}
                                 {scene === 'SCANNER' && <motion.div key="scanner" initial={{ opacity: 0, scale: 1.2 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.6 }}><HeartScanner onComplete={() => markSceneComplete('SCANNER')} /></motion.div>}
                                 {scene === 'HIGHLIGHT' && <motion.div key="highlight" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.2 }} transition={{ duration: 0.8 }}><HandInHandHighlight /></motion.div>}
+                                {scene === 'VIDEO' && <motion.div key="video" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.1 }} transition={{ duration: 0.8 }}><VideoSpotlight /></motion.div>}
                                 {scene === 'SCRAPBOOK' && <motion.div key="scrapbook" initial={{ opacity: 0, rotateY: 90 }} animate={{ opacity: 1, rotateY: 0 }} exit={{ opacity: 0, rotateY: -90 }} transition={{ duration: 0.7 }}><PolaroidScrapbook /></motion.div>}
                                 {scene === 'CAROUSEL' && <motion.div key="carousel" initial={{ opacity: 0, z: -500 }} animate={{ opacity: 1, z: 0 }} exit={{ opacity: 0, z: 500 }} transition={{ duration: 0.8 }}><PhotoCarousel3D onComplete={() => markSceneComplete('CAROUSEL')} /></motion.div>}
                                 {scene === 'MESSAGES' && <motion.div key="messages" initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.6 }}><FloatingLoveNotes /></motion.div>}
@@ -172,13 +179,11 @@ const Home = () => {
                         </div>
 
                         {/* Interactive App Hub */}
-                        <InteractionHub />
+                        <InteractionHub isMusicPlaying={isMusicPlaying} onToggleMusic={() => setIsMusicPlaying(!isMusicPlaying)} />
                     </motion.div>
                 )}
-
-
-
             </AnimatePresence>
+            <MusicPlayer isPlaying={isMusicPlaying} onToggle={() => setIsMusicPlaying(!isMusicPlaying)} />
         </div>
     );
 };

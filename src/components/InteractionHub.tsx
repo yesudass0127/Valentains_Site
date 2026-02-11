@@ -7,11 +7,21 @@ interface LoveAction {
     action: () => void;
 }
 
-const InteractionHub: React.FC = () => {
+interface InteractionHubProps {
+    isMusicPlaying: boolean;
+    onToggleMusic: () => void;
+}
+
+const InteractionHub: React.FC<InteractionHubProps> = ({ isMusicPlaying, onToggleMusic }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [activeMessage, setActiveMessage] = useState<string | null>(null);
 
     const actions: LoveAction[] = [
+        {
+            icon: isMusicPlaying ? "🎵" : "🔇",
+            label: isMusicPlaying ? "Pause Music" : "Play Music",
+            action: onToggleMusic
+        },
         {
             icon: "💖",
             label: "Get a Compliment",
